@@ -17,7 +17,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/senselog/node-red-contrib-json-to-mqtt"
+    "url": "git+https://github.com/senselog/node-red-contrib-json-to-mqtt.git"
   },
   "bugs": {
     "url": "https://github.com/senselog/node-red-contrib-json-to-mqtt/issues"
