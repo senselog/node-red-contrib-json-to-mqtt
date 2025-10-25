@@ -1,0 +1,10 @@
+# Claude Code
+CLAUDE.md
+
+# Git
+.gitignore
+.git/
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,142 @@
+<script type="text/javascript">
+    RED.nodes.registerType('json-to-mqtt', {
+        category: 'network',
+        color: '#d8bfd8',
+        defaults: {
+            name: {value: ""},
+            prefix: {value: ""},
+            outputFormat: {value: "naked"},
+            includeNull: {value: false}
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "bridge.png",
+        paletteLabel: "json-mqtt",
+        label: function() {
+            return this.name || "json to mqtt";
+        },
+        labelStyle: function() {
+            return this.name ? "node_label_italic" : "";
+        },
+        oneditprepare: function() {
+            var updateHint = function() {
+                var format = $('#node-input-outputFormat').val();
+                var hints = {
+                    'naked': '<b>Naked value</b> - Sends only the raw value without any wrapper.<br><br>' +
+                             'Example:<br>' +
+                             'Topic: <code>home/temp</code><br>' +
+                             'Message: <code>23.1</code>',
+
+                    'value': '<b>Value object</b> - Wraps the value in a JSON object with "value" key.<br><br>' +
+                             'Example:<br>' +
+                             'Topic: <code>home/temp</code><br>' +
+                             'Message: <code>{"value": 23.1}</code>',
+
+                    'last_key': '<b>Last key</b> - Creates a JSON object using the last key from the topic path.<br><br>' +
+                                'Example:<br>' +
+                                'Topic: <code>home/temp</code><br>' +
+                                'Message: <code>{"temp": 23.1}</code>',
+
+                    'parent_object': '<b>Parent object</b> - Creates ONE message per object containing all primitive values.<br><br>' +
+                                     'Example:<br>' +
+                                     'Topic: <code>home/sensors/0</code><br>' +
+                                     'Message: <code>{"temp": 23.1, "hum": 67.5, "id": 1}</code><br><br>' +
+                                     '<i>Note: Stops at object level, not individual fields.</i>'
+                };
+                $('#output-format-hint').html(hints[format]);
+            };
+
+            $('#node-input-outputFormat').on('change', updateHint);
+            updateHint();
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="json-to-mqtt">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-prefix"><i class="fa fa-folder"></i> Topic Prefix</label>
+        <input type="text" id="node-input-prefix" placeholder="e.g., weatherstation">
+    </div>
+
+    <div class="form-row">
+        <label>&nbsp;</label>
+        <input type="checkbox" id="node-input-includeNull" style="display:inline-block; width:auto; vertical-align:top;">
+        <label for="node-input-includeNull" style="width:70%">Include null values</label>
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-outputFormat"><i class="fa fa-code"></i> Output</label>
+        <select id="node-input-outputFormat" style="width:70%">
+            <option value="naked">Naked value</option>
+            <option value="value">Value object</option>
+            <option value="last_key">Last key</option>
+            <option value="parent_object">Parent object</option>
+        </select>
+    </div>
+
+    <div class="form-tips" id="output-format-hint" style="margin-top: 10px;"></div>
+</script>
+
+<script type="text/html" data-help-name="json-to-mqtt">
+    <p>Converts any JSON object into an MQTT topic tree structure.</p>
+    
+    <h3>Configuration</h3>
+    <dl class="message-properties">
+        <dt>Topic Prefix <span class="property-type">string</span></dt>
+        <dd>Optional prefix for all MQTT topics (e.g., "weatherstation")</dd>
+        
+        <dt>Output Format <span class="property-type">string</span></dt>
+        <dd>
+            <ul>
+                <li><b>Naked value:</b> Raw value only, no JSON wrapper (e.g., <code>23.1</code>). Best for simple numeric consumers.</li>
+                <li><b>Value object:</b> Value wrapped in object with "value" key (e.g., <code>{"value": 23.1}</code>). Useful for standardized consumers.</li>
+                <li><b>Last key:</b> Object with the last key from topic path (e.g., <code>{"temp": 23.1}</code>). Preserves the parameter name.</li>
+                <li><b>Parent object:</b> Creates ONE message per object with all primitive values (e.g., topic: <code>sensors/0</code>, payload: <code>{"temp": 23.1, "hum": 67.5, "id": 1}</code>). Keeps all related values together in a single message.</li>
+            </ul>
+        </dd>
+        
+        <dt>Include null values <span class="property-type">boolean</span></dt>
+        <dd>If checked, null values will be published to MQTT topics</dd>
+    </dl>
+    
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>JSON object to convert</dd>
+    </dl>
+    
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>topic <span class="property-type">string</span></dt>
+        <dd>MQTT topic path generated from JSON structure</dd>
+        
+        <dt>payload <span class="property-type">any</span></dt>
+        <dd>Value formatted according to Output Format setting</dd>
+    </dl>
+    
+    <h3>Details</h3>
+    <p>This node recursively traverses any JSON structure and creates individual MQTT messages
+    for each leaf value. Arrays are handled by adding index numbers to the topic path.</p>
+    
+    <h3>Example</h3>
+    <p>Input JSON:</p>
+    <pre>{"home": {"sensors": [{"temp": 23.1, "hum": 67.5}]}}</pre>
+
+    <p>Output with "naked" format:</p>
+    <pre>Topic: home/sensors/0/temp
+Payload: 23.1
+
+Topic: home/sensors/0/hum
+Payload: 67.5</pre>
+
+    <p>Output with "parent_object" format:</p>
+    <pre>Topic: home/sensors/0
+Payload: {"temp": 23.1, "hum": 67.5}</pre>
+
+    <p><b>Note:</b> Parent object format creates ONE message per object, not one per field.</p>
+</script>

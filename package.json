@@ -1,0 +1,35 @@
+{
+  "name": "node-red-contrib-json-to-mqtt",
+  "version": "1.0.0",
+  "description": "Convert any JSON object to MQTT topic tree with configurable output formats",
+  "keywords": [
+    "node-red",
+    "json",
+    "mqtt",
+    "converter",
+    "flatten",
+    "iot",
+    "bridge",
+    "transform",
+    "topic-tree"
+  ],
+  "author": "SenseLog.com",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/senselog/node-red-contrib-json-to-mqtt"
+  },
+  "bugs": {
+    "url": "https://github.com/senselog/node-red-contrib-json-to-mqtt/issues"
+  },
+  "homepage": "https://github.com/senselog/node-red-contrib-json-to-mqtt#readme",
+  "node-red": {
+    "nodes": {
+      "json-to-mqtt": "json-to-mqtt.js"
+    }
+  },
+  "dependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
