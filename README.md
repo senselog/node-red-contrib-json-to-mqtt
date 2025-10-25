@@ -182,7 +182,7 @@ Payload: 1013.25
 
 ## Contributing
 
-Issues and pull requests welcome at [GitHub repository](https://github.com/sense-log/node-red-contrib-json-to-mqtt)
+Issues and pull requests welcome at [GitHub repository](https://github.com/senselog/node-red-contrib-json-to-mqtt)
 
 ## License
 
