@@ -1,0 +1,153 @@
+[
+    {
+        "id": "inject2",
+        "type": "inject",
+        "name": "Sample JSON",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"home\":{\"sensors\":[{\"temp\":23.1,\"hum\":67.5,\"id\":1}]}}",
+        "payloadType": "json",
+        "x": 150,
+        "y": 200,
+        "wires": [
+            [
+                "jsonmqtt2",
+                "jsonmqtt3",
+                "jsonmqtt4",
+                "jsonmqtt5"
+            ]
+        ]
+    },
+    {
+        "id": "jsonmqtt2",
+        "type": "json-to-mqtt",
+        "name": "Naked Value",
+        "prefix": "test",
+        "outputFormat": "naked",
+        "includeNull": false,
+        "x": 350,
+        "y": 100,
+        "wires": [
+            [
+                "debug2"
+            ]
+        ]
+    },
+    {
+        "id": "jsonmqtt3",
+        "type": "json-to-mqtt",
+        "name": "Value Object",
+        "prefix": "test",
+        "outputFormat": "value",
+        "includeNull": false,
+        "x": 350,
+        "y": 160,
+        "wires": [
+            [
+                "debug3"
+            ]
+        ]
+    },
+    {
+        "id": "jsonmqtt4",
+        "type": "json-to-mqtt",
+        "name": "Last Key",
+        "prefix": "test",
+        "outputFormat": "last_key",
+        "includeNull": false,
+        "x": 350,
+        "y": 220,
+        "wires": [
+            [
+                "debug4"
+            ]
+        ]
+    },
+    {
+        "id": "jsonmqtt5",
+        "type": "json-to-mqtt",
+        "name": "Parent Object",
+        "prefix": "test",
+        "outputFormat": "parent_object",
+        "includeNull": false,
+        "x": 350,
+        "y": 280,
+        "wires": [
+            [
+                "debug5"
+            ]
+        ]
+    },
+    {
+        "id": "debug2",
+        "type": "debug",
+        "name": "Naked",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 530,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "debug3",
+        "type": "debug",
+        "name": "Value",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 530,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "debug4",
+        "type": "debug",
+        "name": "Last Key",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 540,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "debug5",
+        "type": "debug",
+        "name": "Parent",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 530,
+        "y": 280,
+        "wires": []
+    }
+]

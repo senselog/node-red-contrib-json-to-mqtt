@@ -33,6 +33,8 @@ npm install node-red-contrib-json-to-mqtt
 4. Connect the output to an **mqtt out** node
 5. Send a JSON object to the input
 
+**💡 Tip:** Import example flows from the `examples` folder to see the node in action!
+
 ## Output Formats
 
 The node supports 4 different output formats to match your MQTT consumer requirements:

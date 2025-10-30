@@ -1,0 +1,57 @@
+[
+    {
+        "id": "inject1",
+        "type": "inject",
+        "name": "Sample JSON",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"home\":{\"sensors\":[{\"temp\":23.1,\"hum\":67.5,\"id\":1}]}}",
+        "payloadType": "json",
+        "x": 150,
+        "y": 100,
+        "wires": [
+            [
+                "jsonmqtt1"
+            ]
+        ]
+    },
+    {
+        "id": "jsonmqtt1",
+        "type": "json-to-mqtt",
+        "name": "Naked Format",
+        "prefix": "weatherstation",
+        "outputFormat": "naked",
+        "includeNull": false,
+        "x": 350,
+        "y": 100,
+        "wires": [
+            [
+                "debug1"
+            ]
+        ]
+    },
+    {
+        "id": "debug1",
+        "type": "debug",
+        "name": "MQTT Messages",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 550,
+        "y": 100,
+        "wires": []
+    }
+]
