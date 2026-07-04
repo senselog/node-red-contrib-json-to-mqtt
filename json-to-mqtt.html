@@ -37,11 +37,12 @@
                                 'Topic: <code>home/temp</code><br>' +
                                 'Message: <code>{"temp": 23.1}</code>',
 
-                    'parent_object': '<b>Parent object</b> - Creates ONE message per object containing all primitive values.<br><br>' +
+                    'parent_object': '<b>Parent object</b> - Creates ONE message per object containing all its primitive values.<br><br>' +
                                      'Example:<br>' +
                                      'Topic: <code>home/sensors/0</code><br>' +
                                      'Message: <code>{"temp": 23.1, "hum": 67.5, "id": 1}</code><br><br>' +
-                                     '<i>Note: Stops at object level, not individual fields.</i>'
+                                     '<i>Note: Groups values at object level, not individual fields. ' +
+                                     'Primitive values at the root of the payload require a Topic Prefix.</i>'
                 };
                 $('#output-format-hint').html(hints[format]);
             };
@@ -96,7 +97,7 @@
                 <li><b>Naked value:</b> Raw value only, no JSON wrapper (e.g., <code>23.1</code>). Best for simple numeric consumers.</li>
                 <li><b>Value object:</b> Value wrapped in object with "value" key (e.g., <code>{"value": 23.1}</code>). Useful for standardized consumers.</li>
                 <li><b>Last key:</b> Object with the last key from topic path (e.g., <code>{"temp": 23.1}</code>). Preserves the parameter name.</li>
-                <li><b>Parent object:</b> Creates ONE message per object with all primitive values (e.g., topic: <code>sensors/0</code>, payload: <code>{"temp": 23.1, "hum": 67.5, "id": 1}</code>). Keeps all related values together in a single message.</li>
+                <li><b>Parent object:</b> Creates ONE message per object with all its primitive values (e.g., topic: <code>sensors/0</code>, payload: <code>{"temp": 23.1, "hum": 67.5, "id": 1}</code>). Nested objects and arrays produce their own messages. Primitive values at the root of the payload require a Topic Prefix, otherwise they are skipped with a warning.</li>
             </ul>
         </dd>
         
@@ -106,8 +107,9 @@
     
     <h3>Inputs</h3>
     <dl class="message-properties">
-        <dt>payload <span class="property-type">object</span></dt>
-        <dd>JSON object to convert</dd>
+        <dt>payload <span class="property-type">object | array</span></dt>
+        <dd>JSON object or array to convert. Strings are not parsed automatically -
+        use a JSON node first. Other payload types raise a catchable error.</dd>
     </dl>
     
     <h3>Outputs</h3>
@@ -122,6 +124,9 @@
     <h3>Details</h3>
     <p>This node recursively traverses any JSON structure and creates individual MQTT messages
     for each leaf value. Arrays are handled by adding index numbers to the topic path.</p>
+    <p>Topics mirror the JSON keys verbatim - keys containing MQTT special characters
+    (<code>/</code>, <code>+</code>, <code>#</code>) are not escaped. Output messages are newly
+    created; properties of the incoming message are not preserved.</p>
     
     <h3>Example</h3>
     <p>Input JSON:</p>

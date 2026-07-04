@@ -91,7 +91,7 @@ Payload: {"hum": 67.5}
 ```
 
 ### 4. Parent Object
-Creates ONE message per object containing all primitive values. Stops at objects that contain only primitive values instead of creating individual messages for each field. This preserves the complete context of related values in a single message.
+Creates ONE message per object containing all its primitive values, instead of creating individual messages for each field. This preserves the complete context of related values in a single message.
 
 ```
 Topic: home/sensors/0
@@ -100,8 +100,10 @@ Payload: {"temp": 23.1, "hum": 67.5, "id": 1}
 
 **Note**:
 - Creates a single message at the object level (not one per field)
-- Only primitive values (strings, numbers, booleans, null) are included in the payload
-- Nested objects and arrays are excluded
+- Only primitive values (strings, numbers, booleans) are included in the payload; nulls are included when "Include null values" is checked
+- Nested objects and arrays produce their own messages at their own topic paths
+- Arrays of primitive values are grouped into one message with index keys (e.g., `{"tags": ["a", "b"]}` → topic `tags`, payload `{"0": "a", "1": "b"}`)
+- Primitive values at the root of the payload require a Topic Prefix (they have no path of their own); without a prefix they are skipped with a warning
 - Useful when you want to keep all sensor readings together in one MQTT message
 
 ## Configuration
@@ -168,10 +170,16 @@ Payload: 1013.25
 - 📊 **Data Distribution** - Fan out complex data structures to multiple MQTT consumers
 - 🔄 **Protocol Translation** - Convert between JSON APIs and MQTT-based systems
 
+## Limitations
+
+- **Input must be a JSON object or array** - strings are not parsed automatically; use a JSON node first. Other payload types raise an error that can be handled with a Catch node.
+- **MQTT special characters are not escaped** - topics mirror JSON keys verbatim, so keys containing `/`, `+` or `#` will produce unexpected topic levels or wildcards.
+- **Incoming message properties are not preserved** - output messages are newly created and carry only `topic` and `payload`.
+
 ## Troubleshooting
 
 **No messages output**
-- Check that input payload is a valid JSON object
+- Check that input payload is a JSON object or array (not a string - use a JSON node to parse strings first)
 - Verify "Include null values" setting if your data contains nulls
 
 **Too many messages**
